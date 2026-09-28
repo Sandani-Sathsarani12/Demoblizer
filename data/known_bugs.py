@@ -1,0 +1,15 @@
+KNOWN_BUGS = {
+    "Bug 001": {"status": "open", "description": "Next/Previous navigation does not display products correctly"},
+    "Bug 006": {"status": "open", "description": "Empty contact form handling"},
+    "Bug 007": {"status": "open", "description": "Invalid contact email handling"},
+    "Bug 008": {"status": "open", "description": "Numeric contact name handling"},
+    "Bug 012": {"status": "open", "description": "Purchase attempt with an empty cart"},
+    "Bug 015": {"status": "open", "description": "Repeated product additions"},
+    "Bug 016": {"status": "open", "description": "Place Order behavior with an empty cart"},
+    "Bug 017": {"status": "open", "description": "Cart access after logout"},
+    "Bug 018": {"status": "open", "description": "Credit card input validation"},
+    "Bug 019": {"status": "open", "description": "Expired card validation"},
+    "Bug 020": {"status": "open", "description": "Empty contact message handling"},
+    "Bug 022": {"status": "open", "description": "Zero or negative card validation"},
+    "Bug 023": {"status": "open", "description": "Repeated failed login attempts"},
+}

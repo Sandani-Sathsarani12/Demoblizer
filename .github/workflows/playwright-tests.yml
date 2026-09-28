@@ -1,0 +1,66 @@
+name: Demoblaze Playwright Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: Browser to run
+        required: false
+        default: chromium
+        type: choice
+        options: [chromium, firefox, webkit]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium]
+    env:
+      BROWSER: ${{ github.event.inputs.browser || matrix.browser }}
+      HEADLESS: true
+      KNOWN_BUG_POLICY: report
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Install Playwright browser
+        run: playwright install --with-deps "$BROWSER"
+      - name: Run tests and generate reports
+        run: pytest -v --html=reports/report.html --self-contained-html --alluredir=reports/allure-results
+      - name: Upload HTML and Allure reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports-${{ env.BROWSER }}
+          path: reports/
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-${{ env.BROWSER }}
+          path: screenshots/
+      - name: Upload traces and videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-evidence-${{ env.BROWSER }}
+          path: |
+            traces/
+            videos/
+      - name: Job summary
+        if: always()
+        run: |
+          echo "### Demoblaze test artifacts" >> "$GITHUB_STEP_SUMMARY"
+          echo "Browser: $BROWSER" >> "$GITHUB_STEP_SUMMARY"
+          echo "Known bug policy: $KNOWN_BUG_POLICY" >> "$GITHUB_STEP_SUMMARY"
+          echo "Reports and evidence were uploaded as workflow artifacts." >> "$GITHUB_STEP_SUMMARY"
